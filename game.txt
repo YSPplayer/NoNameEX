@@ -3,3 +3,4 @@ brawl:
 clickCapt函数：点击左侧按钮时触发的事件
 lib.storage中的数据存储在电脑中，下一次打开还存在,game存储
 的数据下一次打开不存在
+在content之外用log打不出信息，扩展加载的优先级比模式高

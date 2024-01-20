@@ -1,0 +1,12 @@
+.centerViewport {
+    position: absolute;
+    /* 宽高比2.6 */
+    width: 800px;    
+    height: 308px;
+    background-image: url(../source/centerBg.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
