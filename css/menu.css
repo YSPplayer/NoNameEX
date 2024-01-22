@@ -1,4 +1,4 @@
-.centerViewport {
+.zefraCenterViewport {
     position: absolute;
     /* 宽高比2.6 */
     width: 800px;    
@@ -9,4 +9,63 @@
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.zefraTitleViewport {
+    position: absolute;
+    width: 600px;    
+    height: 80px;
+    background-image: url(../source/titleBg.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    top:4.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center; /* 水平居中 */
+    line-height: 92px; /* 垂直居中，值应与div的高度相同 */
+    color: #E0B51E;
+    font-weight: bold;
+    text-shadow: 1px 1px 4px #FDF9E6;
+    font-size: 20px;
+}
+
+.zefracardContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; /* 设置为Flex容器 */
+    flex-direction: row; /* 子元素水平排列 */
+}
+
+.zefracard {
+    position: static;
+    background-image: url(../source/bscenes.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 400px;
+    width: 200px;
+    margin-right: 20px; /* 设置左边距为20px */
+}
+.zefracardContainer .zefracardindex0 {
+    margin-left: 20px;
+}
+.generalCard {
+    position: relative;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 208px;
+    width: 160px;
+    top: 25px;
+    border-radius: 8px;
+    background-color: red;
+}
+.generalCard .textnameDiv {
+    position:absolute;
+    writing-mode: vertical-lr; /*修改书写方向*/
+    left: 5px;
+    top: 5px;
+    color: white;
+    font-size: 10px;
+    text-shadow: rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, black 0 0 1px;
 }

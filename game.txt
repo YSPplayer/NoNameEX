@@ -4,3 +4,7 @@ clickCapt函数：点击左侧按钮时触发的事件
 lib.storage中的数据存储在电脑中，下一次打开还存在,game存储
 的数据下一次打开不存在
 在content之外用log打不出信息，扩展加载的优先级比模式高
+lib.character 存放武将的地方 ar caocao=['male','wei',4,['x_jianxiong'],['db:extension-xxx:x_caocao.jpg','zhu']];
+lib.translate 存放文字的翻译
+lib.characterPack 存放不同卡包【不包括扩展卡包】
+lib.rank 卡片的等级

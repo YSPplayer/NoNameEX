@@ -1,3 +1,4 @@
+import { ZefraUtil as util } from './util.js';
 game.import("extension",function(lib,game,ui,get,ai,_status)
 {
     //创建我们自己的环境
@@ -8,10 +9,17 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
             let lastIndex = window.location.href.lastIndexOf('/');
             let result = window.location.href.substring(0, lastIndex + 1);
             let href = `${result}/extension/小shu扩展`; 
+            //初始化环境
+            util.Init(lib,game,ui,get,ai,_status,result);
             game.zefraEv = {
                 modeName:'山河图',
                 intervalLoop:0,
                 expath:href,//扩展的主路径
+                originalStartButton:null,//原始开始按钮
+                divviewport:null,//菜单主容器
+                package: {//卡包分类管理器
+
+                },
                 loadCss:function(name) {
                     //加载css样式
                     let link = document.createElement('link');
@@ -21,11 +29,36 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     // 将link元素添加到文档的head中
                     document.head.appendChild(link);
                 },
+                startbuttonclick:function(div) {
+                    //开始按钮
+                    let viewport = game.zefraEv.divviewport;
+                    //武将容器
+                    let cardContainer = document.createElement('div');
+                    cardContainer.className = 'zefracardContainer';
+                    viewport.appendChild(cardContainer);
+                    //插入武将
+                    for (let index = 0; index < 5; index++) {
+                        let card = document.createElement('div');
+                        card.classList.add('zefracard',`zefracardindex${index}`);
+                        cardContainer.appendChild(card);
+                        let generalCard = document.createElement('div');
+                        generalCard.className = 'generalCard';
+                        card.appendChild(generalCard);
+                        let zcard = util.GetRandomCard();
+                        generalCard.style.backgroundImage = `url(${zcard.imageurl})`;
+                        let textnameDiv = document.createElement('div');
+                        textnameDiv.className = 'textnameDiv';
+                        textnameDiv.innerText = zcard.textName;
+                        let titleSpan = document.createElement('span');
+                        generalCard.appendChild(textnameDiv);//名称
+                    }
+                   },
                 dialogbuttonclick:function(div) {
                     //如果当前不是div激活则跳过
                     if(!div.classList.contains('active')) return false;
                     //获取到视口div
                     let viewport = null;
+                    let startButton = null;
                     let divs = document.querySelectorAll('.content');
                     if(!divs || divs.length <= 0) return false;
                     let children = divs[0].children;
@@ -40,13 +73,26 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                                 child.parentNode.removeChild(child);
                                 //移除之后需要减去索引
                                 i--;
+                            } else {
+                                //替换事件
+                                game.zefraEv.originalStartButton = child;
+                                // 克隆div元素，不包括事件监听器
+                                let clonedChild = child.cloneNode(true);
+                                // 用克隆的div替换原始的div
+                                child.parentNode.replaceChild(clonedChild, child);
+                                startButton = clonedChild;
+                                //添加新的按钮事件
+                                startButton.addEventListener("click",function() {
+                                    game.zefraEv.startbuttonclick(this);
+                                }); 
                             }
                         }
                     }
                     if(viewport == null) return false;
+                    game.zefraEv.divviewport = viewport;
                     //移除视口div下的所有元素
                     while (viewport.firstChild) {
-                        viewport.removeChild(viewport.firstChild);
+                         viewport.removeChild(viewport.firstChild);
                     }
                     //加载css文件
                     game.zefraEv.loadCss('menu');
@@ -56,11 +102,17 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     viewport.style.backgroundSize = '100% 100%'; //铺满
                     viewport.style.backgroundRepeat = 'no-repeat';
                     viewport.style.height = '100%';
+                    viewport.style.borderRadius = '8px';
                     //创建居中图像的盒子
-                    var centerViewport = document.createElement('div');
-                    centerViewport.className = 'centerViewport';
+                    let centerViewport = document.createElement('div');
+                    centerViewport.className = 'zefraCenterViewport';
+                    let titleViewport = document.createElement('div');
+                    titleViewport.className = 'zefraTitleViewport';
+                    titleViewport.innerText = "山河图";
                     //添加div
                     viewport.appendChild(centerViewport);
+                    viewport.appendChild(titleViewport);
+
                 }
             }
         }
