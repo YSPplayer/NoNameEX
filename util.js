@@ -7,6 +7,10 @@ export class ZefraUtil {
     static ai = null;
     static _status = null;
     static cardpackage = null;
+    static ZefraNamePackage = '小shu扩展';//包包名
+    static cardNameTitle = ['界','晋','谋','族','乐','神','📱','☆','智',
+'信','仁','勇','严','典','将','战','★','传','武','K','梦','起','承','转','旧','星'];
+    static cardNameTitle2 = ['OL','SP','用间','TW','手杀','新杀']
     //武将品质
     static cardqualitys = ['legend','s','epic']; //s+
     static cardqualityA = ['rare','ap','a'];
@@ -43,6 +47,7 @@ export class ZefraUtil {
     }
     static FilterCard(name) {
         let result = false;
+        if(!ZefraUtil.lib.character[name]) return false;
         for (let index = 0; index < ZefraUtil.cardpackage.length; index++) {
             const pname = ZefraUtil.cardpackage[index];
             if(ZefraUtil.lib.characterPack[pname][name]) {
@@ -84,11 +89,11 @@ export class ZefraUtil {
             times++;
             let index =  ZefraUtil.GetRandomNumber(0,cardArray.length);
             name = cardArray[index];
-            if(times >= 10) return new zCard(name,key);
+            if(times >= 10) return new zCard(name,key,ZefraUtil.lib.character[name]);
             else {
                 //不存在我们的卡，继续循环
                 if(!ZefraUtil.FilterCard(name)) continue;
-                return new zCard(name,key);
+                return new zCard(name,key,ZefraUtil.lib.character[name]);
             }
         }
     }

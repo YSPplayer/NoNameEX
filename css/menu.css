@@ -58,7 +58,58 @@
     width: 160px;
     top: 25px;
     border-radius: 8px;
-    background-color: red;
+}
+.generalCard .quality {
+    position: absolute;
+    bottom: -80px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 80px;
+    width: 92px;
+
+}
+.generalCard.qun .textnameDiv,
+.generalCard.qun .textCamp{
+    text-shadow: rgba(164, 164, 164, 1) 0 0 2px,rgba(164, 164, 164, 1) 0 0 5px,rgba(164, 164, 164, 1) 0 0 10px,
+    rgba(164, 164, 164, 1) 0 0 10px,rgba(164, 164, 164, 1) 0 0 20px,rgba(164, 164, 164, 1) 0 0 20px,black 0 0 1px;
+}
+
+.generalCard.wu .textnameDiv,
+.generalCard.wu .textCamp{
+    text-shadow: rgba(57, 123, 4,1) 0 0 2px,rgba(57, 123, 4,1) 0 0 5px,rgba(57, 123, 4,1) 0 0 10px,
+    rgba(57, 123, 4,1) 0 0 10px,rgba(57, 123, 4,1) 0 0 20px,rgba(57, 123, 4,1) 0 0 20px,black 0 0 1px;
+}
+
+.generalCard.shu .textnameDiv,
+.generalCard.shu .textCamp{
+    text-shadow: rgba(128, 59, 2,1) 0 0 2px,rgba(128, 59, 2,1) 0 0 5px,rgba(128, 59, 2,1) 0 0 10px,
+    rgba(128, 59, 2,1) 0 0 10px,rgba(128, 59, 2,1) 0 0 20px,rgba(128, 59, 2,1) 0 0 20px,black 0 0 1px;;
+}
+
+.generalCard.wei .textnameDiv,
+.generalCard.wei .textCamp{
+    text-shadow: rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, black 0 0 1px;
+}
+
+.generalCard.shen .textnameDiv,
+.generalCard.shen .textCamp{
+    text-shadow: rgba(243, 171, 27, 1) 0 0 2px,rgba(243, 171, 27, 1) 0 0 5px,rgba(243, 171, 27, 1) 0 0 10px,
+    rgba(243, 171, 27, 1) 0 0 10px,rgba(243, 171, 27, 1) 0 0 20px,rgba(243, 171, 27, 1) 0 0 20px,black 0 0 1px;
+}
+
+.generalCard.jin .textnameDiv,
+.generalCard.jin .textCamp{
+    text-shadow: rgba(100, 74, 139,1) 0 0 2px,rgba(100, 74, 139,1) 0 0 5px,rgba(100, 74, 139,1) 0 0 10px,
+    rgba(100, 74, 139,1) 0 0 10px,rgba(100, 74, 139,1) 0 0 20px,rgba(100, 74, 139,1) 0 0 20px,black 0 0 1px;
+}
+.generalCard .textCamp {
+    position:absolute;
+    right: 5px;
+    top: 5px;
+    color: white;
+    font-size: 18px;
 }
 .generalCard .textnameDiv {
     position:absolute;
@@ -66,6 +117,10 @@
     left: 5px;
     top: 5px;
     color: white;
-    font-size: 10px;
-    text-shadow: rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, rgb(78 117 140) 0 0 2px, black 0 0 1px;
+    font-size: 18px;
+}
+.generalCard .textnameDiv .textnameTitle1,
+.generalCard .textnameDiv .textnameTitle2 {
+    writing-mode: horizontal-tb;
+    color: gold;
 }

@@ -8,7 +8,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
             //设置我们当前扩展的路径
             let lastIndex = window.location.href.lastIndexOf('/');
             let result = window.location.href.substring(0, lastIndex + 1);
-            let href = `${result}/extension/小shu扩展`; 
+            let href = `${result}/extension/${util.ZefraNamePackage}`; 
             //初始化环境
             util.Init(lib,game,ui,get,ai,_status,result);
             game.zefraEv = {
@@ -17,9 +17,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                 expath:href,//扩展的主路径
                 originalStartButton:null,//原始开始按钮
                 divviewport:null,//菜单主容器
-                package: {//卡包分类管理器
-
-                },
                 loadCss:function(name) {
                     //加载css样式
                     let link = document.createElement('link');
@@ -48,9 +45,53 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         generalCard.style.backgroundImage = `url(${zcard.imageurl})`;
                         let textnameDiv = document.createElement('div');
                         textnameDiv.className = 'textnameDiv';
-                        textnameDiv.innerText = zcard.textName;
-                        let titleSpan = document.createElement('span');
-                        generalCard.appendChild(textnameDiv);//名称
+                        generalCard.appendChild(textnameDiv);
+                        //判断名称以用不同颜色盒子装载
+                        let doublekey = '';
+                        let namnecontext = '';
+                        let first = false;
+                        let last = false;
+                        for (let index = 0; index < zcard.textName.length; index++) {
+                            const key = zcard.textName[index];
+                            if(index <= 1) doublekey += key;
+                            if(!first && util.cardNameTitle.includes(key) && 
+                            (zcard.textName.length - (index + 1 )) >= 2 ) {
+                                first = true;
+                                //包含第一个名称
+                                let titleSpan = document.createElement('span');
+                                titleSpan.className = 'textnameTitle1';
+                                textnameDiv.appendChild(titleSpan);
+                                if(key === '星') key = "★";
+                                titleSpan.innerText = key;
+                            } else if(!last && util.cardNameTitle2.includes(doublekey)
+                            && (zcard.textName.length - (index + 1 )) >= 2) {
+                                last = true;
+                                let titleSpan2 = document.createElement('span');
+                                titleSpan2.className = 'textnameTitle2';
+                                textnameDiv.appendChild(titleSpan2);
+                                if(doublekey === '手杀') doublekey = '📱';
+                                titleSpan2.innerText = doublekey;
+                                //需要移除第一个字符
+                                namnecontext =  namnecontext.slice(1);
+                            } else {
+                                namnecontext += key;
+                            }
+                        }
+                        let titleConetxt = document.createElement('span');
+                        titleConetxt.className = 'textnameContext';
+                        textnameDiv.appendChild(titleConetxt);//名称
+                        titleConetxt.innerText = namnecontext;
+                        //创建新的div用于存放势力
+                        let campDiv = document.createElement('div');
+                        campDiv.className = 'textCamp';
+                        generalCard.classList.add(zcard.camp);
+                        campDiv.innerText = zcard.textCamp;
+                        generalCard.appendChild(campDiv);
+                        //品质
+                        let qualityDiv = document.createElement('div');
+                        qualityDiv.className = 'quality';
+                        qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
+                        generalCard.appendChild(qualityDiv);
                     }
                    },
                 dialogbuttonclick:function(div) {
