@@ -1,4 +1,5 @@
 import { ZefraUtil as util } from './util.js';
+import { ZefraGameMode as gmode } from './gamemode.js';
 game.import("extension",function(lib,game,ui,get,ai,_status)
 {
     //创建我们自己的环境
@@ -15,6 +16,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                 modeName:'山河图',
                 intervalLoop:0,
                 expath:href,//扩展的主路径
+                cardDiv:[],//存放我们开局选择框的div
+                zCards:[],//存放当前的zCards对象
                 originalStartButton:null,//原始开始按钮
                 divviewport:null,//菜单主容器
                 loadCss:function(name) {
@@ -26,22 +29,46 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     // 将link元素添加到文档的head中
                     document.head.appendChild(link);
                 },
+                selectbuttonClick:function(div,index) {
+                    ui.auto.show();
+                },
                 startbuttonclick:function(div) {
+                    //开始模式
+                    gmode.StartMode();
+                    game.zefraEv.cardDiv = [];
                     //开始按钮
                     let viewport = game.zefraEv.divviewport;
+                    //鼠标右击取消
+                    viewport.addEventListener('contextmenu',function() {
+                        if(!gmode.IsMode() || !game.zefraEv || !game.zefraEv.cardDiv) return;
+                        for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
+                            const ediv = game.zefraEv.cardDiv[index];
+                            ediv.style.filter = "none";
+                            let buttons = ediv.querySelectorAll(".cardSelectButton");
+                            if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                        }
+                    });
                     //武将容器
                     let cardContainer = document.createElement('div');
                     cardContainer.className = 'zefracardContainer';
                     viewport.appendChild(cardContainer);
                     //插入武将
+                    let nameArray = [];
                     for (let index = 0; index < 5; index++) {
+                        let zcard = util.GetRandomCard();
+                        if(nameArray.includes(zcard.name)) {
+                            //重新抽
+                            index--;
+                            continue;
+                        }
+                        nameArray.push(zcard.name);
+                        game.zefraEv.zCards.push(zcard);
                         let card = document.createElement('div');
                         card.classList.add('zefracard',`zefracardindex${index}`);
                         cardContainer.appendChild(card);
                         let generalCard = document.createElement('div');
                         generalCard.className = 'generalCard';
                         card.appendChild(generalCard);
-                        let zcard = util.GetRandomCard();
                         generalCard.style.backgroundImage = `url(${zcard.imageurl})`;
                         let textnameDiv = document.createElement('div');
                         textnameDiv.className = 'textnameDiv';
@@ -52,7 +79,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         let first = false;
                         let last = false;
                         for (let index = 0; index < zcard.textName.length; index++) {
-                            const key = zcard.textName[index];
+                            let key = zcard.textName[index];
                             if(index <= 1) doublekey += key;
                             if(!first && util.cardNameTitle.includes(key) && 
                             (zcard.textName.length - (index + 1 )) >= 2 ) {
@@ -70,6 +97,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                                 titleSpan2.className = 'textnameTitle2';
                                 textnameDiv.appendChild(titleSpan2);
                                 if(doublekey === '手杀') doublekey = '📱';
+                                else if(doublekey === '新杀') doublekey = '新';
                                 titleSpan2.innerText = doublekey;
                                 //需要移除第一个字符
                                 namnecontext =  namnecontext.slice(1);
@@ -92,8 +120,47 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         qualityDiv.className = 'quality';
                         qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
                         generalCard.appendChild(qualityDiv);
+                        //技能描述
+                        let skilldesDiv = document.createElement('div');
+                        skilldesDiv.className = 'skilldesDiv';
+                        for (let j = 0; j < zcard.textskillArray.length; j++) {
+                            let skillname = zcard.textskillArray[j];
+                            let skillspan1 = document.createElement('span');
+                            skillspan1.classList.add (`skillspan1_${j}`,zcard.camp);
+                            skillspan1.innerText = skillname;
+                            let skillinfo = zcard.textskillinfoArray[j];
+                            let skillspan2 = document.createElement('span');
+                            skillspan2.className = `skillspan2_${j}`;
+                            skillspan2.innerText = `:${skillinfo}\n`;
+                            // strinfo += `  ${skillname}:${skillinfo}\n`;
+                            skilldesDiv.appendChild(skillspan1);
+                            skilldesDiv.appendChild(skillspan2);
+                        }
+                        // skilldesDiv.innerText = strinfo;
+                        card.appendChild(skilldesDiv);
+                        card.addEventListener('click',function() {
+                            for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
+                                const ediv = game.zefraEv.cardDiv[index];
+                                let buttons = ediv.querySelectorAll(".cardSelectButton");
+                                if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                                if(ediv == this) {
+                                    ediv.style.filter = "none";
+                                    let cardSelectButton = document.createElement('div');
+                                    cardSelectButton.className = 'cardSelectButton';
+                                    cardSelectButton.innerText = '选择';
+                                    card.appendChild(cardSelectButton);
+                                    cardSelectButton.style.visibility  = 'visible';
+                                    cardSelectButton.addEventListener('click',function() {
+                                        game.zefraEv.selectbuttonClick(this,index);
+                                    });
+                                } else {
+                                    ediv.style.filter = "blur(2px)"; // 应用5像素的高斯模糊效果
+                                }
+                            }
+                        });
+                        game.zefraEv.cardDiv.push(card);
                     }
-                   },
+                },
                 dialogbuttonclick:function(div) {
                     //如果当前不是div激活则跳过
                     if(!div.classList.contains('active')) return false;
@@ -199,7 +266,7 @@ return {
                         }
                     }
                 }
-                else if(zefraEv.intervalLoop > 5) {
+                else if(zefraEv.intervalLoop > 9) {
                     clearInterval(intervalId);
                 }
                 ++zefraEv.intervalLoop;

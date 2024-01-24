@@ -37,7 +37,27 @@
     display: flex; /* 设置为Flex容器 */
     flex-direction: row; /* 子元素水平排列 */
 }
+.cardSelectButton:hover {
+    color: gold;
+}
+.cardSelectButton {
+    position: static;
+    background-image:url(../source/button.png);
+    width: 100px;
+    height: 37.5px;
+    border-radius: 8px;
+    margin-top: 50px;
+    margin-left: 50px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    
 
+}
 .zefracard {
     position: static;
     background-image: url(../source/bscenes.png);
@@ -123,4 +143,47 @@
 .generalCard .textnameDiv .textnameTitle2 {
     writing-mode: horizontal-tb;
     color: gold;
+}
+.zefracard .skilldesDiv span {
+    font-weight: bold;
+}
+.zefracard .skilldesDiv span.qun{
+    color: rgb(164,164,164);
+}
+.zefracard .skilldesDiv span.wu{
+    color: rgb(57,123,4);
+}
+.zefracard .skilldesDiv span.shu{
+    color:  rgb(128, 59, 2)
+}
+.zefracard .skilldesDiv span.wei{
+    color: rgb(78,117,140);
+}
+.zefracard .skilldesDiv span.shen{
+    color: rgb(243,171,27);
+}
+.zefracard .skilldesDiv span.jin{
+    color: rgb(100,74,139);
+}
+.zefracard .skilldesDiv {
+    width: 150px;
+    height: 90px;
+    margin-top: 62px;
+    position: relative;
+    background-image: url(../source/skillContainer.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    background-color: #C09669;
+    overflow: auto;
+    line-height: 1.2;
+    padding :5px 5px 5px 5px;
+    color: black;
+    text-align: left;
+    font-size: 14px;
+    /* text-indent: 28px; */
+}
+
+.zefracard:hover {
+    cursor: pointer;
 }

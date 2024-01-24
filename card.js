@@ -14,10 +14,12 @@ export class ZefraCard {
             this.maxLp = data[2];//血条上限
             this.skillArray = data[3];//技能key
             this.textskillArray = [];//技能字符
+            this.textskillinfoArray = [];//技能描述
             for (let index = 0; index < this.skillArray.length; index++) {
                 this.textskillArray.push(util.lib.translate[this.skillArray[index]]);
+                this.textskillinfoArray.push(util.lib.translate[`${this.skillArray[index]}_info`]);
             }
-            console.log(this.textskillArray[0])
+
 
         }
     }
