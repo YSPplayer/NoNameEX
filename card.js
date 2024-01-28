@@ -1,12 +1,11 @@
 import { ZefraUtil as util } from './util.js';
 export class ZefraCard {
-    static rootpath;
     constructor(name, qualitye,data) {
         this.name = name;//武将名
         this.qualitye = qualitye;//品质
         this.textName = util.lib.translate[name];//文本名
-        this.imageurl = `${ZefraCard.rootpath}/image/character/${name}.jpg`; //图片地址
-        this.qualityeUrl = `${ZefraCard.rootpath}/extension/${util.ZefraNamePackage}/source/${ZefraCard.GetQualityeUrl(this.qualitye)}.png`;//品质图片地址
+        this.imageurl = `${util.GetRootPath()}/image/character/${name}.jpg`; //图片地址
+        this.qualityeUrl = `${util.GetRootPath()}/extension/${util.ZefraNamePackage}/source/${ZefraCard.GetQualityeUrl(this.qualitye)}.png`;//品质图片地址
         if(data !== undefined) {
             this.sex = data[0];//性别
             this.camp = data[1];//实例

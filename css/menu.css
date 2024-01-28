@@ -28,7 +28,45 @@
     text-shadow: 1px 1px 4px #FDF9E6;
     font-size: 20px;
 }
-
+.warfareText {
+    position: absolute;
+    height: 50px;
+    width: 150px;
+    transform: translate(-50%, 0);
+    top:35px;
+    color: white;
+    text-align: center; /* 水平居中 */
+    line-height: 50px; /* 垂直居中，值应与div的高度相同 */
+    font-size: 15px;
+    font-weight: bold;
+}
+.warfare {
+    position: static;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 400px;
+    width: 200px;
+    margin-right: 20px;
+}
+.warfareDes {
+    position: absolute;
+    width: 145px;
+    height: 100px;
+    transform: translate(-50%, 50%);
+    top:170px;
+    text-indent: 1em;
+    text-align: left;
+    overflow: auto;
+}
+.warfarePicture {
+    position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 118px;
+    width: 118px;
+    top: 148px;
+    transform: translate(-50%, -50%);
+}
 .zefracardContainer {
     position: absolute;
     top: 50%;
@@ -37,10 +75,24 @@
     display: flex; /* 设置为Flex容器 */
     flex-direction: row; /* 子元素水平排列 */
 }
-.cardSelectButton:hover {
+.textContainer {
+    position:absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #a7ffbe;
+    font-size: 35px;
+    text-shadow: rgb(223, 202, 202) 0 0 2px,rgb(223, 202, 202) 0 0 5px,rgb(223, 202, 202) 0 0 10px,
+    rgb(223, 202, 202) 0 0 10px,rgb(223, 202, 202) 0 0 20px,rgb(223, 202, 202) 0 0 20px,black 0 0 1px;
+    font-weight: bold;
+}
+.cardSelectButton:hover,.warfareSelectButton:hover {
     color: gold;
 }
-.cardSelectButton {
+.warfare .warfareSelectButton {
+    margin-top: 360px;
+}
+.cardSelectButton,.warfareSelectButton {
     position: static;
     background-image:url(../source/button.png);
     width: 100px;
@@ -58,6 +110,7 @@
     
 
 }
+
 .zefracard {
     position: static;
     background-image: url(../source/bscenes.png);
@@ -184,6 +237,24 @@
     /* text-indent: 28px; */
 }
 
-.zefracard:hover {
+.zefracard:hover,.warfare:hover {
     cursor: pointer;
+}
+.lpNumberDiv {
+    position: absolute;
+    color: white;
+    font-size: 18px;
+    top: 85%;
+    left: 87%;
+    font-weight: bold;
+}
+.lpDiv {
+    position: absolute;
+    background-image: url(../source/glass1.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 20px;
+    top: 85%;
+    left: 72%;
 }

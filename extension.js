@@ -4,8 +4,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
 {
     //创建我们自己的环境
     let CreateEv = function() {
-        //创建自己的环境
-        if(!lib.game.zefraEv) {
+        //创建自己的环境 lib.game
+        if(!game.zefraEv) {
             //设置我们当前扩展的路径
             let lastIndex = window.location.href.lastIndexOf('/');
             let result = window.location.href.substring(0, lastIndex + 1);
@@ -18,6 +18,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                 expath:href,//扩展的主路径
                 cardDiv:[],//存放我们开局选择框的div
                 zCards:[],//存放当前的zCards对象
+                warfaresDiv:[],//存放当前的战法选择框的div
+                warfares:[],
                 originalStartButton:null,//原始开始按钮
                 divviewport:null,//菜单主容器
                 loadCss:function(name) {
@@ -29,25 +31,95 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     // 将link元素添加到文档的head中
                     document.head.appendChild(link);
                 },
-                selectbuttonClick:function(div,index) {
-                    ui.auto.show();
+                warfareebuttonClick:function(div,index) {
+                    'step 2'
+                    //选择战法
+                    gmode.SetModeData(game.zefraEv.warfares[index]);
+                    gmode.NextStep();
+                },
+                selectbuttonClick:function(div,index,textContainer,cardContainer) {
+                    'step 1'
+                    //选择完毕之后，保存我们当前的武将卡
+                    gmode.SetModeData(game.zefraEv.zCards[index]);
+                    //进入下一步
+                    gmode.NextStep();
+                    util.RemoveElement(cardContainer,false);
+                    //加载下一个战法
+                    textContainer.innerText = '请选择初始的战法';
+                    textContainer.style.color = 'rgb(108, 175, 230)';          
+                    let viewport = game.zefraEv.divviewport;
+                    let warfareContainer = cardContainer;//用旧的就行
+                    viewport.appendChild(warfareContainer);
+                    let warfaresDiv = game.zefraEv.warfaresDiv;
+                    let warfares = game.zefraEv.warfares;
+                    for (let index = 0; index < 4; index++) {
+                        let [_warfare,_wfare] = util.GetRandomWarFareUI(warfareContainer);
+                        _warfare.addEventListener('click',function() {
+                            for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
+                                const element = game.zefraEv.warfaresDiv[index];
+                                if(element == this) {
+                                    element.style.filter = "none";
+                                    if(element.querySelectorAll(".warfareSelectButton").length <= 0) {
+                                        //创建button按钮
+                                        let warfareSelectButton = document.createElement('div');
+                                        warfareSelectButton.className = 'warfareSelectButton';
+                                        warfareSelectButton.innerText = '选择';
+                                        warfareSelectButton.addEventListener('click',function() {
+                                            game.zefraEv.warfareebuttonClick(this,index);
+                                        });
+                                        this.appendChild(warfareSelectButton);
+                                    }
+                                } else {
+                                    element.style.filter = "blur(2px)";
+                                    //如果存在就移除当前上面的button按钮
+                                    let buttons = element.querySelectorAll(".warfareSelectButton");
+                                    util.RemoveElements(buttons);
+                                }
+                            }
+                        });
+                        warfaresDiv.push(_warfare);
+                        warfares.push(_wfare);
+                    }
+                    
+                    //删除环境
+                    // let meunDiv = document.querySelectorAll('.noupdate.character.scroll1');
+                    // meunDiv[0].delete();
+                    
                 },
                 startbuttonclick:function(div) {
                     //开始模式
                     gmode.StartMode();
                     game.zefraEv.cardDiv = [];
+                    'step 0'
                     //开始按钮
                     let viewport = game.zefraEv.divviewport;
-                    //鼠标右击取消
+                    //鼠标右击取消 contextmenu
                     viewport.addEventListener('contextmenu',function() {
                         if(!gmode.IsMode() || !game.zefraEv || !game.zefraEv.cardDiv) return;
-                        for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
-                            const ediv = game.zefraEv.cardDiv[index];
-                            ediv.style.filter = "none";
-                            let buttons = ediv.querySelectorAll(".cardSelectButton");
-                            if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                        if(gmode.GetModeStep() == gmode.Type.SELECT_CHARACTER_BEFORE_DUEL) {
+                            for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
+                                const ediv = game.zefraEv.cardDiv[index];
+                                ediv.style.filter = "none";
+                                let buttons = ediv.querySelectorAll(".cardSelectButton");
+                                if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                            }
+                        } else if(gmode.GetModeStep() == gmode.Type.SELECT_WARFARE_BEFORE_DUEL) {
+                            //选择战法时的重置
+                            for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
+                                const element = game.zefraEv.warfaresDiv[index];
+                                element.style.filter = "none";
+                                //移除所有按钮
+                                let buttons = element.querySelectorAll(".warfareSelectButton");
+                                util.RemoveElements(buttons);
+                            }
                         }
+
                     });
+                    //请选择出征的武将
+                    let textContainer = document.createElement('div');
+                    textContainer.className = 'textContainer';
+                    textContainer.innerText = '请选择要出征的武将';
+                    viewport.appendChild(textContainer);
                     //武将容器
                     let cardContainer = document.createElement('div');
                     cardContainer.className = 'zefracardContainer';
@@ -73,6 +145,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         let textnameDiv = document.createElement('div');
                         textnameDiv.className = 'textnameDiv';
                         generalCard.appendChild(textnameDiv);
+                        //血条
+                        let lpDiv = document.createElement('div');
+                        lpDiv.className = 'lpDiv';
+                        generalCard.appendChild(lpDiv);
+                        //血量
+                        let lpNumberDiv = document.createElement('div');
+                        lpNumberDiv.className = 'lpNumberDiv';
+                        lpNumberDiv.innerText = zcard.maxLp;
+                        generalCard.appendChild(lpNumberDiv);
                         //判断名称以用不同颜色盒子装载
                         let doublekey = '';
                         let namnecontext = '';
@@ -151,7 +232,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                                     card.appendChild(cardSelectButton);
                                     cardSelectButton.style.visibility  = 'visible';
                                     cardSelectButton.addEventListener('click',function() {
-                                        game.zefraEv.selectbuttonClick(this,index);
+                                        game.zefraEv.selectbuttonClick(this,index,textContainer,cardContainer);
                                     });
                                 } else {
                                     ediv.style.filter = "blur(2px)"; // 应用5像素的高斯模糊效果

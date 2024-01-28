@@ -1,4 +1,5 @@
 import { ZefraCard as zCard } from './card.js';
+import { WarFare as wfare } from './warfare.js';
 export class ZefraUtil {
     static lib = null;
     static game = null;
@@ -30,7 +31,6 @@ export class ZefraUtil {
         'xinghuoliaoyuan', 'yijiang', 'yingbian'];
     static Init(lib_,game_,ui_,get_,ai_,_status_,rootpath_) {
         //初始化card对象的地址
-        zCard.rootpath = rootpath_;
         ZefraUtil.lib = lib_;
         ZefraUtil.game = game_;
         ZefraUtil.ui = ui_;
@@ -38,7 +38,22 @@ export class ZefraUtil {
         ZefraUtil.ai = ai_;
         ZefraUtil._status = _status_;
         ZefraUtil.rootpath_ = rootpath_;
+    } 
+    static GetRootPath() {
+        return ZefraUtil.rootpath_;
     }
+    static RemoveElements(divs) {
+        if(!divs || divs.length <= 0) return;
+        for (let index = 0; index < divs.length; index++) {
+            ZefraUtil.RemoveElement(divs[index],true);
+        }
+    }
+    static RemoveElement(div,isRemoveParent) {
+        while (div.firstChild) {
+            div.removeChild(div.firstChild);
+        }
+        if(isRemoveParent) div.remove();
+    } 
 
     static GetRandomNumber(min,max) {
         let value = Math.floor(Math.random() * (max - min)) + min;
@@ -96,6 +111,53 @@ export class ZefraUtil {
                 return new zCard(name,key,ZefraUtil.lib.character[name]);
             }
         }
+    }
+    static GetRandomWarFare() {
+        let number = ZefraUtil.GetRandomNumber(0,101);
+        let wfareArray;
+        let quality;
+        //普通战法70%概率，稀有战法25%概率，史诗战法4%概率，传说1%
+        if (number <= 1) {
+            wfareArray = wfare.LegendWarfares; 
+            quality = wfare.Qualitye.Legend;
+        } else if (number <= 4) { 
+            wfareArray = wfare.EpicLWarfares; 
+            quality = wfare.Qualitye.Epic;
+        } else if (number <= 25) { 
+            wfareArray = wfare.RareWarfares; 
+            quality = wfare.Qualitye.Rare;
+        } else {
+            wfareArray = wfare.OrdinaryWarfares; 
+            quality = wfare.Qualitye.Ordinary;
+        } 
+        wfareArray = wfare.OrdinaryWarfares;
+        number = ZefraUtil.GetRandomNumber(0,wfareArray.length);
+        number = 0;
+        return [new wfare(wfareArray[number],quality),quality];
+    }
+
+    //加载随机战法
+    static GetRandomWarFareUI(parent) {
+        let [_wfare,quality] = ZefraUtil.GetRandomWarFare();//获取随机战法
+        let warfare = document.createElement('div');
+        warfare.className = 'warfare';
+        warfare.style.backgroundImage = `url(${wfare.GetBackImageUrl(quality)})`;
+        parent.appendChild(warfare);
+        let warfareText = document.createElement('div');
+        warfareText.className = 'warfareText'; 
+        warfareText.style.color = wfare.GetTextNameColor(quality);
+        warfareText.innerText = _wfare.textName;
+        warfare.appendChild(warfareText);
+        let warfarePicture = document.createElement('div');
+        warfarePicture.className = 'warfarePicture';
+        warfarePicture.style.backgroundImage = `url(${_wfare.imageurl})`;
+        warfare.appendChild(warfarePicture);
+        let warfareDes = document.createElement('div');
+        warfareDes.className = 'warfareDes';
+        warfareDes.innerText = _wfare.textDescribe;
+        warfareDes.style.color = wfare.GetTextNameColor(quality);
+        warfare.appendChild(warfareDes);
+        return [warfare,_wfare];
     }
 
 }
