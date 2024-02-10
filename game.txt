@@ -8,3 +8,13 @@ lib.character 存放武将的地方 ar caocao=['male','wei',4,['x_jianxiong'],['
 lib.translate 存放文字的翻译
 lib.characterPack 存放不同卡包【不包括扩展卡包】
 lib.rank 卡片的等级
+lib.characterIntro 存放卡片的角色介绍
+开始游戏的代码在 ui的index.js的1164行
+132行 开始
+game.reload
+216 braw.js
+	static system(str, func, right, before) {
+create.在ui代码中
+swichmode，传入mode的参数，初始化开始对决
+// submode 表示决斗的人数
+submode:'endless',

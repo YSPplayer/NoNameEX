@@ -29,13 +29,13 @@ export class WarFare {
         if(qualitye == 1) return '#689eff';
         if(qualitye == 2) return '#e2a15e';
         if(qualitye == 3) return '#ff7575';
-        return '';
+        return WarFare.GetTextNameColor(0);
     }
     static GetBackImageUrl(qualitye) {
         if(qualitye == 0) return `${util.GetRootPath()}/extension/${util.ZefraNamePackage}/source/OrdinaryWarfare.png`;
         if(qualitye == 1) return `${util.GetRootPath()}/extension/${util.ZefraNamePackage}/source/RareWarfare.png`;
         if(qualitye == 2) return `${util.GetRootPath()}/extension/${util.ZefraNamePackage}/source/EpicWarfare.png`;
         if(qualitye == 3) return `${util.GetRootPath()}/extension/${util.ZefraNamePackage}/source/LegendWarfare.png`;
-        return '';
+        return WarFare.GetBackImageUrl(0);
     }
 }

@@ -75,6 +75,14 @@
     display: flex; /* 设置为Flex容器 */
     flex-direction: row; /* 子元素水平排列 */
 }
+.zefracardContainer .confirm {
+    position:static;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-image:url(../source/confirm.png);
+    width: 870px;
+    height: 600px;
+}
 .textContainer {
     position:absolute;
     top: 15%;
@@ -123,6 +131,16 @@
 .zefracardContainer .zefracardindex0 {
     margin-left: 20px;
 }
+.generalCard.confirm {
+    position:absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 260px;
+    width: 200px;
+    border-radius: 8px;
+    left: 75px;
+    top: 90px;
+}
 .generalCard {
     position: relative;
     background-size: 100% 100%;
@@ -132,16 +150,22 @@
     top: 25px;
     border-radius: 8px;
 }
-.generalCard .quality {
+.generalCard .quality,.generalCard.confirm .quality {
     position: absolute;
-    bottom: -80px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    left: 50%;
     transform: translate(-50%, -50%);
+    left: 50%;
+}
+.generalCard.confirm .quality {
+    bottom: -100px;
+    height: 100px;
+    width: 115px;
+}
+.generalCard .quality{
+    bottom: -80px;
     height: 80px;
     width: 92px;
-
 }
 .generalCard.qun .textnameDiv,
 .generalCard.qun .textCamp{
@@ -177,6 +201,55 @@
     text-shadow: rgba(100, 74, 139,1) 0 0 2px,rgba(100, 74, 139,1) 0 0 5px,rgba(100, 74, 139,1) 0 0 10px,
     rgba(100, 74, 139,1) 0 0 10px,rgba(100, 74, 139,1) 0 0 20px,rgba(100, 74, 139,1) 0 0 20px,black 0 0 1px;
 }
+.zcharacterInfo {
+    height: 178px;
+    width: 500px;
+    top: 95px;
+    right: 77px;
+    text-indent: 2em;
+    font-size: 18px;
+}
+.zcharacterSkillInfo,.zcharacterInfo,.zwarfareInfo  {
+    position: absolute;
+    border-radius: 8px;
+    text-align: left;
+    line-height: 1.4;
+    overflow: auto;
+    font-weight: bold;
+}
+.zwarfareTitle {
+    font-weight: bold;
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    top: 400px;
+    left: 83px;
+    font-size: 25px;
+    text-align: left;
+    font-style: italic;
+}
+.zwarfareLineInfo {
+    position: absolute;
+    width: 250px;
+    height: 2px;
+    background-color: #7b644e;
+    top: 450px;
+    left: 425px;
+}
+.zwarfareInfo {
+    height: 50px;
+    width: 500px;
+    top: 465px;
+    left: 20;
+    right: 77px;
+}
+.zcharacterSkillInfo {
+    height: 145px;
+    width: 500px;
+    top: 286px;
+    right: 77px;
+    font-size: 15px;
+}
 .generalCard .textCamp {
     position:absolute;
     right: 5px;
@@ -184,6 +257,16 @@
     color: white;
     font-size: 18px;
 }
+.generalCard.confirm .textnameDiv,
+.generalCard.confirm .textCamp 
+.generalCard.confirm .lpNumberDiv{
+    font-size: 24px;
+}
+.generalCard.confirm .lpDiv {
+    height: 24px;
+    width: 24px;
+}
+
 .generalCard .textnameDiv {
     position:absolute;
     writing-mode: vertical-lr; /*修改书写方向*/
@@ -207,7 +290,7 @@
     color: rgb(57,123,4);
 }
 .zefracard .skilldesDiv span.shu{
-    color:  rgb(128, 59, 2)
+    color:  rgb(128, 59, 2);
 }
 .zefracard .skilldesDiv span.wei{
     color: rgb(78,117,140);
@@ -236,8 +319,32 @@
     font-size: 14px;
     /* text-indent: 28px; */
 }
-
-.zefracard:hover,.warfare:hover {
+.zwarfareContext {
+    position: absolute;
+    height: 100px;
+    width: 180px;
+    top: 430px;
+    left: 83px;
+    overflow: auto;
+}
+.zwarfareContextChildLine {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.zwarfareCore {
+    position:static;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border-radius: 50%; 
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+.zefracard:hover,.warfare:hover,.zwarfareCore:hover {
     cursor: pointer;
 }
 .lpNumberDiv {

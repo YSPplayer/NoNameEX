@@ -1,9 +1,12 @@
 import { ZefraCard as zCard } from './card.js';
+import { ZefraUtil as util } from './util.js';
 export class ZefraGameMode {
     static Type = {
         NONE:-1,//模式未开启
         SELECT_CHARACTER_BEFORE_DUEL:0,//决斗前选择武将
         SELECT_WARFARE_BEFORE_DUEL:1,//决斗前选择战法
+        SELECT_WARFARE2_BEFORE_DUEL:2,//决斗前选择战法二
+        CONfIRM_CHARACTER:3,//确认武将
     };
     static _IsMode = false;
     static Step = ZefraGameMode.Type.NONE;
@@ -29,7 +32,7 @@ export class ZefraGameMode {
         if(!ZefraGameMode.IsMode()) return;
         if(ZefraGameMode.Step == ZefraGameMode.Type.SELECT_CHARACTER_BEFORE_DUEL) {
             ZefraGameMode.CharacterCard = objArray[0]; //zCard，我们选择的卡片
-        } else if(ZefraGameMode.Step == ZefraGameMode.Type.SELECT_WARFARE_BEFORE_DUEL) {
+        } else if(ZefraGameMode.Step <= ZefraGameMode.Type.SELECT_WARFARE2_BEFORE_DUEL) {
             //添加我们的战法
             ZefraGameMode.Warfares.push(objArray[0]);
         }
@@ -37,6 +40,7 @@ export class ZefraGameMode {
 
     //重置所有资源
     static EndMode() {
+        util.ClearModeUI();
         ZefraGameMode._IsMode = false;
         ZefraGameMode.Step = ZefraGameMode.Type.NONE;
         ZefraGameMode.CharacterCard = null;

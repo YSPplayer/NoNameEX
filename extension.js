@@ -1,5 +1,6 @@
 import { ZefraUtil as util } from './util.js';
 import { ZefraGameMode as gmode } from './gamemode.js';
+import { WarFare as wfare } from './warfare.js';
 game.import("extension",function(lib,game,ui,get,ai,_status)
 {
     //创建我们自己的环境
@@ -31,27 +32,135 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     // 将link元素添加到文档的head中
                     document.head.appendChild(link);
                 },
-                warfareebuttonClick:function(div,index) {
+                warfaree2buttonClick:function(div,index,cardContainer,textContainer) {
+                    //第二次选择战法后
+                    'step 3'
+                    gmode.SetModeData([game.zefraEv.warfares[index]]);
+                    gmode.NextStep();
+                    util.RemoveElement(cardContainer,false);
+                    textContainer.innerText = '请确认出征的武将';
+                    textContainer.style.color = 'rgb(255 246 137)';
+                    //确认角色
+                    let confirm = document.createElement('div');   
+                    confirm.className = 'confirm';
+                    cardContainer.appendChild(confirm);
+                    //根据选择的数据构造界面
+                    let zCard = gmode.CharacterCard;
+                    let generalCard = util.CreateCardUIFromData(zCard,['generalCard','confirm']);
+                    confirm.appendChild(generalCard);
+                    let zcharacterInfo = document.createElement('div');   
+                    zcharacterInfo.className = 'zcharacterInfo';
+                    confirm.appendChild(zcharacterInfo);
+                    zcharacterInfo.innerText = zCard.characterInfo;
+                    zcharacterInfo.style.color = zCard.GetFactionColor();
+                    //技能描述
+                    let zskillInfo = document.createElement('div');  
+                    zskillInfo.className = 'zcharacterSkillInfo';
+                    confirm.appendChild(zskillInfo);
+                    for (let j = 0; j < zCard.textskillArray.length; j++) {
+                        let skillname = zCard.textskillArray[j];
+                        let skillspan1 = document.createElement('span');
+                        skillspan1.classList.add(`skillspan1_${j}`);
+                        skillspan1.innerText = skillname;
+                        let skillinfo = zCard.textskillinfoArray[j];
+                        let skillspan2 = document.createElement('span');
+                        skillspan2.className = `skillspan2_${j}`;
+                        skillspan2.innerText = `:${skillinfo}\n`;
+                        skillspan1.style.color = zCard.GetFactionColor();
+                        zskillInfo.appendChild(skillspan1);
+                        zskillInfo.appendChild(skillspan2);
+                    };
+                     //战法描述
+                    let zwarfareLineInfo = document.createElement('div'); 
+                    zwarfareLineInfo.className = 'zwarfareLineInfo';
+                    confirm.append(zwarfareLineInfo);
+                    let zwarfareInfo = document.createElement('div'); 
+                    zwarfareInfo.className = 'zwarfareInfo';
+                    confirm.append(zwarfareInfo);
+                    //默认只显示第一个
+                    let warfares = gmode.Warfares[0];
+                    let title = document.createElement('span');
+                    title.innerText = warfares.textName;
+                    title.style.color = wfare.GetTextNameColor(warfares.qualitye);
+                    let context = document.createElement('span');
+                    context.innerText = `:${warfares.textDescribe}`; 
+                    zwarfareInfo.append(title);
+                    zwarfareInfo.append(context);
+                    util.UiManage['zwarfareInfotitle'] = title; 
+                    util.UiManage['zwarfareInfocontext'] = context; 
+
+                    let zwarfareTitle = document.createElement('div');  
+                    zwarfareTitle.className = 'zwarfareTitle';
+                    zwarfareTitle.innerText = '战法';
+                    zwarfareTitle.style.color = zCard.GetFactionColor();
+                    confirm.appendChild(zwarfareTitle);  
+                    let zwarfareContext = document.createElement('div'); 
+                    zwarfareContext.className = 'zwarfareContext';
+                    confirm.appendChild(zwarfareContext);  
+                    util.CreateWarFareUI(zwarfareContext,gmode.Warfares);
+                },
+                warfareebuttonClick:function(div,index,cardContainer,textContainer) {
                     'step 2'
                     //选择战法
-                    gmode.SetModeData(game.zefraEv.warfares[index]);
+                    gmode.SetModeData([game.zefraEv.warfares[index]]);
                     gmode.NextStep();
+                    util.RemoveElement(cardContainer,false);
+                    //再选择一次战法
+                    textContainer.innerText = '请选择初始的战法（二）';
+                    let viewport = game.zefraEv.divviewport;
+                    let warfareContainer = cardContainer;//用旧的就行
+                    viewport.appendChild(warfareContainer);
+                    let warfaresDiv = game.zefraEv.warfaresDiv;
+                    let warfares = game.zefraEv.warfares;
+                    warfaresDiv.length = 0;
+                    warfares.length = 0;
+                    for (let index = 0; index < 4; index++) {
+                        let [_warfare,_wfare] = util.GetRandomWarFareUI(warfareContainer);
+                        _warfare.style.filter = "none";
+                        _warfare.addEventListener('click',function() {
+                            for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
+                                const element = game.zefraEv.warfaresDiv[index];
+                                if(element == this) {
+                                    element.style.filter = "none";
+                                    if(element.querySelectorAll(".warfareSelectButton").length <= 0) {
+                                        //创建button按钮
+                                        let warfareSelectButton = document.createElement('div');
+                                        warfareSelectButton.className = 'warfareSelectButton';
+                                        warfareSelectButton.innerText = '选择';
+                                        warfareSelectButton.addEventListener('click',function() {
+                                            game.zefraEv.warfaree2buttonClick(this,index,cardContainer,textContainer);
+                                        });
+                                        this.appendChild(warfareSelectButton);
+                                    }
+                                } else {
+                                    element.style.filter = "blur(2px)";
+                                    //如果存在就移除当前上面的button按钮
+                                    let buttons = element.querySelectorAll(".warfareSelectButton");
+                                    util.RemoveElements(buttons);
+                                }
+                            }
+                        });
+                        warfaresDiv.push(_warfare);
+                        warfares.push(_wfare);
+                    }
                 },
                 selectbuttonClick:function(div,index,textContainer,cardContainer) {
                     'step 1'
                     //选择完毕之后，保存我们当前的武将卡
-                    gmode.SetModeData(game.zefraEv.zCards[index]);
+                    gmode.SetModeData([game.zefraEv.zCards[index]]);
                     //进入下一步
                     gmode.NextStep();
                     util.RemoveElement(cardContainer,false);
                     //加载下一个战法
-                    textContainer.innerText = '请选择初始的战法';
+                    textContainer.innerText = '请选择初始的战法（一）';
                     textContainer.style.color = 'rgb(108, 175, 230)';          
                     let viewport = game.zefraEv.divviewport;
                     let warfareContainer = cardContainer;//用旧的就行
                     viewport.appendChild(warfareContainer);
                     let warfaresDiv = game.zefraEv.warfaresDiv;
                     let warfares = game.zefraEv.warfares;
+                    warfaresDiv.length = 0;
+                    warfares.length = 0;
                     for (let index = 0; index < 4; index++) {
                         let [_warfare,_wfare] = util.GetRandomWarFareUI(warfareContainer);
                         _warfare.addEventListener('click',function() {
@@ -65,7 +174,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                                         warfareSelectButton.className = 'warfareSelectButton';
                                         warfareSelectButton.innerText = '选择';
                                         warfareSelectButton.addEventListener('click',function() {
-                                            game.zefraEv.warfareebuttonClick(this,index);
+                                            game.zefraEv.warfareebuttonClick(this,index,cardContainer,textContainer);
                                         });
                                         this.appendChild(warfareSelectButton);
                                     }
@@ -103,7 +212,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                                 let buttons = ediv.querySelectorAll(".cardSelectButton");
                                 if(buttons.length > 0) ediv.removeChild(buttons[0]);
                             }
-                        } else if(gmode.GetModeStep() == gmode.Type.SELECT_WARFARE_BEFORE_DUEL) {
+                        } else if(gmode.GetModeStep() <= gmode.Type.SELECT_WARFARE2_BEFORE_DUEL) {
                             //选择战法时的重置
                             for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
                                 const element = game.zefraEv.warfaresDiv[index];
@@ -138,69 +247,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         let card = document.createElement('div');
                         card.classList.add('zefracard',`zefracardindex${index}`);
                         cardContainer.appendChild(card);
-                        let generalCard = document.createElement('div');
-                        generalCard.className = 'generalCard';
-                        card.appendChild(generalCard);
-                        generalCard.style.backgroundImage = `url(${zcard.imageurl})`;
-                        let textnameDiv = document.createElement('div');
-                        textnameDiv.className = 'textnameDiv';
-                        generalCard.appendChild(textnameDiv);
-                        //血条
-                        let lpDiv = document.createElement('div');
-                        lpDiv.className = 'lpDiv';
-                        generalCard.appendChild(lpDiv);
-                        //血量
-                        let lpNumberDiv = document.createElement('div');
-                        lpNumberDiv.className = 'lpNumberDiv';
-                        lpNumberDiv.innerText = zcard.maxLp;
-                        generalCard.appendChild(lpNumberDiv);
-                        //判断名称以用不同颜色盒子装载
-                        let doublekey = '';
-                        let namnecontext = '';
-                        let first = false;
-                        let last = false;
-                        for (let index = 0; index < zcard.textName.length; index++) {
-                            let key = zcard.textName[index];
-                            if(index <= 1) doublekey += key;
-                            if(!first && util.cardNameTitle.includes(key) && 
-                            (zcard.textName.length - (index + 1 )) >= 2 ) {
-                                first = true;
-                                //包含第一个名称
-                                let titleSpan = document.createElement('span');
-                                titleSpan.className = 'textnameTitle1';
-                                textnameDiv.appendChild(titleSpan);
-                                if(key === '星') key = "★";
-                                titleSpan.innerText = key;
-                            } else if(!last && util.cardNameTitle2.includes(doublekey)
-                            && (zcard.textName.length - (index + 1 )) >= 2) {
-                                last = true;
-                                let titleSpan2 = document.createElement('span');
-                                titleSpan2.className = 'textnameTitle2';
-                                textnameDiv.appendChild(titleSpan2);
-                                if(doublekey === '手杀') doublekey = '📱';
-                                else if(doublekey === '新杀') doublekey = '新';
-                                titleSpan2.innerText = doublekey;
-                                //需要移除第一个字符
-                                namnecontext =  namnecontext.slice(1);
-                            } else {
-                                namnecontext += key;
-                            }
-                        }
-                        let titleConetxt = document.createElement('span');
-                        titleConetxt.className = 'textnameContext';
-                        textnameDiv.appendChild(titleConetxt);//名称
-                        titleConetxt.innerText = namnecontext;
-                        //创建新的div用于存放势力
-                        let campDiv = document.createElement('div');
-                        campDiv.className = 'textCamp';
-                        generalCard.classList.add(zcard.camp);
-                        campDiv.innerText = zcard.textCamp;
-                        generalCard.appendChild(campDiv);
-                        //品质
-                        let qualityDiv = document.createElement('div');
-                        qualityDiv.className = 'quality';
-                        qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
-                        generalCard.appendChild(qualityDiv);
+                        card.appendChild(util.CreateCardUIFromData(zcard,['generalCard']));
                         //技能描述
                         let skilldesDiv = document.createElement('div');
                         skilldesDiv.className = 'skilldesDiv';

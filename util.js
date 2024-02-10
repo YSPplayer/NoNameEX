@@ -29,16 +29,21 @@ export class ZefraUtil {
         'shiji', 'sp', 'sp2', 
         'standard', 'tw', 'xianding',
         'xinghuoliaoyuan', 'yijiang', 'yingbian'];
-    static Init(lib_,game_,ui_,get_,ai_,_status_,rootpath_) {
+    static UiManage = {};//这里面存放的是我们需要管理和获取的div
+    static Init(lib_,game_,ui_,get_,ai_,status_,rootpath_) {
         //初始化card对象的地址
         ZefraUtil.lib = lib_;
         ZefraUtil.game = game_;
         ZefraUtil.ui = ui_;
         ZefraUtil.get = get_;
         ZefraUtil.ai = ai_;
-        ZefraUtil._status = _status_;
+        ZefraUtil._status = status_;
         ZefraUtil.rootpath_ = rootpath_;
     } 
+    //清理我们的ui管理对象
+    static ClearModeUI() {
+        ZefraUtil.UiManage = {};
+    }
     static GetRootPath() {
         return ZefraUtil.rootpath_;
     }
@@ -135,6 +140,74 @@ export class ZefraUtil {
         number = 0;
         return [new wfare(wfareArray[number],quality),quality];
     }
+    //创建武将ui
+    static CreateCardUIFromData(zcard,classnames) {
+        let generalCard = document.createElement('div');
+        for (let index = 0; index < classnames.length; index++) {
+            generalCard.classList.add(classnames[index]);            
+        }
+        generalCard.style.backgroundImage = `url(${zcard.imageurl})`;
+        let textnameDiv = document.createElement('div');
+        textnameDiv.className = 'textnameDiv';
+        generalCard.appendChild(textnameDiv);
+        //血条
+        let lpDiv = document.createElement('div');
+        lpDiv.className = 'lpDiv';
+        generalCard.appendChild(lpDiv);
+        //血量
+        let lpNumberDiv = document.createElement('div');
+        lpNumberDiv.className = 'lpNumberDiv';
+        lpNumberDiv.innerText = zcard.maxLp;
+        generalCard.appendChild(lpNumberDiv);
+        //判断名称以用不同颜色盒子装载
+        let doublekey = '';
+        let namnecontext = '';
+        let first = false;
+        let last = false;
+        for (let index = 0; index < zcard.textName.length; index++) {
+            let key = zcard.textName[index];
+            if(index <= 1) doublekey += key;
+            if(!first && ZefraUtil.cardNameTitle.includes(key) && 
+            (zcard.textName.length - (index + 1 )) >= 2 ) {
+                first = true;
+                //包含第一个名称
+                let titleSpan = document.createElement('span');
+                titleSpan.className = 'textnameTitle1';
+                textnameDiv.appendChild(titleSpan);
+                if(key === '星') key = "★";
+                titleSpan.innerText = key;
+            } else if(!last && ZefraUtil.cardNameTitle2.includes(doublekey)
+            && (zcard.textName.length - (index + 1 )) >= 2) {
+                last = true;
+                let titleSpan2 = document.createElement('span');
+                titleSpan2.className = 'textnameTitle2';
+                textnameDiv.appendChild(titleSpan2);
+                if(doublekey === '手杀') doublekey = '📱';
+                else if(doublekey === '新杀') doublekey = '新';
+                titleSpan2.innerText = doublekey;
+                //需要移除第一个字符
+                namnecontext =  namnecontext.slice(1);
+            } else {
+                namnecontext += key;
+            }
+        }
+        let titleConetxt = document.createElement('span');
+        titleConetxt.className = 'textnameContext';
+        textnameDiv.appendChild(titleConetxt);//名称
+        titleConetxt.innerText = namnecontext;
+        //创建新的div用于存放势力
+        let campDiv = document.createElement('div');
+        campDiv.className = 'textCamp';
+        generalCard.classList.add(zcard.camp);
+        campDiv.innerText = zcard.textCamp;
+        generalCard.appendChild(campDiv);
+        //品质
+        let qualityDiv = document.createElement('div');
+        qualityDiv.className = 'quality';
+        qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
+        generalCard.appendChild(qualityDiv);
+        return generalCard;
+    }
 
     //加载随机战法
     static GetRandomWarFareUI(parent) {
@@ -158,6 +231,34 @@ export class ZefraUtil {
         warfareDes.style.color = wfare.GetTextNameColor(quality);
         warfare.appendChild(warfareDes);
         return [warfare,_wfare];
+    }
+    //创建战法图片
+    static CreateWarFareUI(parent,Warfares) {
+        let j = 0;//每行最多放3个
+        let currentzwarfareContextChildLine = null; 
+        for (let i = 0; i < Warfares.length; i++,j++) {
+            if(j == 0) {
+                let zwarfareContextChildLine = document.createElement('div'); 
+                zwarfareContextChildLine.className = 'zwarfareContextChildLine';
+                parent.appendChild(zwarfareContextChildLine);
+                currentzwarfareContextChildLine = zwarfareContextChildLine;
+            }
+            let zwarfareCore = document.createElement('div'); 
+            zwarfareCore.className = 'zwarfareCore';
+            zwarfareCore.style.backgroundImage = `url(${Warfares[i].imageurl})`;
+            zwarfareCore.addEventListener('click',function() {
+                //显示战法描述
+                let Warfare = Warfares[i];
+                ZefraUtil.UiManage['zwarfareInfotitle'].innerText = Warfare.textName;
+                ZefraUtil.UiManage['zwarfareInfotitle'].style.color = wfare.GetTextNameColor(Warfare.qualitye); 
+                ZefraUtil.UiManage['zwarfareInfocontext'] = Warfare.textDescribe; 
+            });
+            currentzwarfareContextChildLine.appendChild(zwarfareCore);
+            if(j == 2) {
+                j = 0;
+                currentzwarfareContextChildLine = null; 
+            }
+        }
     }
 
 }
