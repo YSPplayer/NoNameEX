@@ -1,6 +1,7 @@
 import { ZefraUtil as util } from './util.js';
 export class ZefraCard {
     constructor(name, qualitye,data) {
+        //name = 'xin_zhuzhi';
         this.name = name;//武将名
         this.qualitye = qualitye;//品质
         this.textName = util.lib.translate[name];//文本名
@@ -30,7 +31,7 @@ export class ZefraCard {
         if(camp === 'shu') return 'rgb(241 147 71)';
         if(camp === 'wei') return 'rgb(152 197 224)';
         if(camp === 'shen') return 'rgb(243,171,27)';
-        if(camp === 'jin') return 'rgb(100,74,139)';
+        if(camp === 'jin') return 'rgb(192 170 222)';
         return '';
     }
     static GetQualityeUrl(qualitye) {

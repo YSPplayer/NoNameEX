@@ -96,6 +96,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                     confirm.appendChild(zwarfareTitle);  
                     let zwarfareContext = document.createElement('div'); 
                     zwarfareContext.className = 'zwarfareContext';
+                    zwarfareContext.style.top = '430px';
+                    zwarfareContext.style.left = '83px';
+                    zwarfareContext.style.height = '100px';
                     confirm.appendChild(zwarfareContext);  
                     util.CreateWarFareUI(zwarfareContext,gmode.Warfares);
                 },
@@ -189,105 +192,139 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         warfaresDiv.push(_warfare);
                         warfares.push(_wfare);
                     }
-                    
-                    //删除环境
-                    // let meunDiv = document.querySelectorAll('.noupdate.character.scroll1');
-                    // meunDiv[0].delete();
-                    
                 },
                 startbuttonclick:function(div) {
-                    //开始模式
-                    gmode.StartMode();
-                    game.zefraEv.cardDiv = [];
-                    'step 0'
-                    //开始按钮
-                    let viewport = game.zefraEv.divviewport;
-                    //鼠标右击取消 contextmenu
-                    viewport.addEventListener('contextmenu',function() {
-                        if(!gmode.IsMode() || !game.zefraEv || !game.zefraEv.cardDiv) return;
-                        if(gmode.GetModeStep() == gmode.Type.SELECT_CHARACTER_BEFORE_DUEL) {
-                            for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
-                                const ediv = game.zefraEv.cardDiv[index];
-                                ediv.style.filter = "none";
-                                let buttons = ediv.querySelectorAll(".cardSelectButton");
-                                if(buttons.length > 0) ediv.removeChild(buttons[0]);
-                            }
-                        } else if(gmode.GetModeStep() <= gmode.Type.SELECT_WARFARE2_BEFORE_DUEL) {
-                            //选择战法时的重置
-                            for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
-                                const element = game.zefraEv.warfaresDiv[index];
-                                element.style.filter = "none";
-                                //移除所有按钮
-                                let buttons = element.querySelectorAll(".warfareSelectButton");
-                                util.RemoveElements(buttons);
-                            }
-                        }
-
-                    });
-                    //请选择出征的武将
-                    let textContainer = document.createElement('div');
-                    textContainer.className = 'textContainer';
-                    textContainer.innerText = '请选择要出征的武将';
-                    viewport.appendChild(textContainer);
-                    //武将容器
-                    let cardContainer = document.createElement('div');
-                    cardContainer.className = 'zefracardContainer';
-                    viewport.appendChild(cardContainer);
-                    //插入武将
-                    let nameArray = [];
-                    for (let index = 0; index < 5; index++) {
-                        let zcard = util.GetRandomCard();
-                        if(nameArray.includes(zcard.name)) {
-                            //重新抽
-                            index--;
-                            continue;
-                        }
-                        nameArray.push(zcard.name);
-                        game.zefraEv.zCards.push(zcard);
-                        let card = document.createElement('div');
-                        card.classList.add('zefracard',`zefracardindex${index}`);
-                        cardContainer.appendChild(card);
-                        card.appendChild(util.CreateCardUIFromData(zcard,['generalCard']));
-                        //技能描述
-                        let skilldesDiv = document.createElement('div');
-                        skilldesDiv.className = 'skilldesDiv';
-                        for (let j = 0; j < zcard.textskillArray.length; j++) {
-                            let skillname = zcard.textskillArray[j];
-                            let skillspan1 = document.createElement('span');
-                            skillspan1.classList.add (`skillspan1_${j}`,zcard.camp);
-                            skillspan1.innerText = skillname;
-                            let skillinfo = zcard.textskillinfoArray[j];
-                            let skillspan2 = document.createElement('span');
-                            skillspan2.className = `skillspan2_${j}`;
-                            skillspan2.innerText = `:${skillinfo}\n`;
-                            // strinfo += `  ${skillname}:${skillinfo}\n`;
-                            skilldesDiv.appendChild(skillspan1);
-                            skilldesDiv.appendChild(skillspan2);
-                        }
-                        // skilldesDiv.innerText = strinfo;
-                        card.appendChild(skilldesDiv);
-                        card.addEventListener('click',function() {
-                            for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
-                                const ediv = game.zefraEv.cardDiv[index];
-                                let buttons = ediv.querySelectorAll(".cardSelectButton");
-                                if(buttons.length > 0) ediv.removeChild(buttons[0]);
-                                if(ediv == this) {
+                    if(!gmode.IsMode()){
+                        //开始模式
+                        gmode.StartMode();
+                        game.zefraEv.cardDiv = [];
+                        'step 0'
+                        //开始按钮
+                        let viewport = game.zefraEv.divviewport;
+                        //鼠标右击取消 contextmenu
+                        viewport.addEventListener('contextmenu',function() {
+                            if(!gmode.IsMode() || !game.zefraEv || !game.zefraEv.cardDiv) return;
+                            if(gmode.GetModeStep() == gmode.Type.SELECT_CHARACTER_BEFORE_DUEL) {
+                                for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
+                                    const ediv = game.zefraEv.cardDiv[index];
                                     ediv.style.filter = "none";
-                                    let cardSelectButton = document.createElement('div');
-                                    cardSelectButton.className = 'cardSelectButton';
-                                    cardSelectButton.innerText = '选择';
-                                    card.appendChild(cardSelectButton);
-                                    cardSelectButton.style.visibility  = 'visible';
-                                    cardSelectButton.addEventListener('click',function() {
-                                        game.zefraEv.selectbuttonClick(this,index,textContainer,cardContainer);
-                                    });
-                                } else {
-                                    ediv.style.filter = "blur(2px)"; // 应用5像素的高斯模糊效果
+                                    let buttons = ediv.querySelectorAll(".cardSelectButton");
+                                    if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                                }
+                            } else if(gmode.GetModeStep() <= gmode.Type.SELECT_WARFARE2_BEFORE_DUEL) {
+                                //选择战法时的重置
+                                for (let index = 0; index < game.zefraEv.warfaresDiv.length; index++) {
+                                    const element = game.zefraEv.warfaresDiv[index];
+                                    element.style.filter = "none";
+                                    //移除所有按钮
+                                    let buttons = element.querySelectorAll(".warfareSelectButton");
+                                    util.RemoveElements(buttons);
                                 }
                             }
+
                         });
-                        game.zefraEv.cardDiv.push(card);
-                    }
+                        //请选择出征的武将
+                        let textContainer = document.createElement('div');
+                        textContainer.className = 'textContainer';
+                        textContainer.innerText = '请选择要出征的武将';
+                        viewport.appendChild(textContainer);
+                        //武将容器
+                        let cardContainer = document.createElement('div');
+                        cardContainer.className = 'zefracardContainer';
+                        viewport.appendChild(cardContainer);
+                        //插入武将
+                        let nameArray = [];
+                        for (let index = 0; index < 5; index++) {
+                            let zcard = util.GetRandomCard();
+                            if(nameArray.includes(zcard.name)) {
+                                //重新抽
+                                index--;
+                                continue;
+                            }
+                            nameArray.push(zcard.name);
+                            game.zefraEv.zCards.push(zcard);
+                            let card = document.createElement('div');
+                            card.classList.add('zefracard',`zefracardindex${index}`);
+                            cardContainer.appendChild(card);
+                            card.appendChild(util.CreateCardUIFromData(zcard,['generalCard']));
+                            //技能描述
+                            let skilldesDiv = document.createElement('div');
+                            skilldesDiv.className = 'skilldesDiv';
+                            for (let j = 0; j < zcard.textskillArray.length; j++) {
+                                let skillname = zcard.textskillArray[j];
+                                let skillspan1 = document.createElement('span');
+                                skillspan1.classList.add (`skillspan1_${j}`,zcard.camp);
+                                skillspan1.innerText = skillname;
+                                let skillinfo = zcard.textskillinfoArray[j];
+                                let skillspan2 = document.createElement('span');
+                                skillspan2.className = `skillspan2_${j}`;
+                                skillspan2.innerText = `:${skillinfo}\n`;
+                                // strinfo += `  ${skillname}:${skillinfo}\n`;
+                                skilldesDiv.appendChild(skillspan1);
+                                skilldesDiv.appendChild(skillspan2);
+                            }
+                            // skilldesDiv.innerText = strinfo;
+                            card.appendChild(skilldesDiv);
+                            card.addEventListener('click',function() {
+                                for (let index = 0; index <  game.zefraEv.cardDiv.length; index++) {
+                                    const ediv = game.zefraEv.cardDiv[index];
+                                    let buttons = ediv.querySelectorAll(".cardSelectButton");
+                                    if(buttons.length > 0) ediv.removeChild(buttons[0]);
+                                    if(ediv == this) {
+                                        ediv.style.filter = "none";
+                                        let cardSelectButton = document.createElement('div');
+                                        cardSelectButton.className = 'cardSelectButton';
+                                        cardSelectButton.innerText = '选择';
+                                        card.appendChild(cardSelectButton);
+                                        cardSelectButton.style.visibility  = 'visible';
+                                        cardSelectButton.addEventListener('click',function() {
+                                            game.zefraEv.selectbuttonClick(this,index,textContainer,cardContainer);
+                                        });
+                                    } else {
+                                        ediv.style.filter = "blur(2px)"; // 应用5像素的高斯模糊效果
+                                    }
+                                }
+                            });
+                            game.zefraEv.cardDiv.push(card);
+                        }
+                    } else if(gmode.GetModeStep() == gmode.Type.CONfIRM_CHARACTER) {
+                        //开始游戏模式
+                        'step 4'
+                        gmode.NextStep();
+                        //删除环境
+                        let meunDiv = document.querySelectorAll('.noupdate.character.scroll1');
+                        meunDiv[0].delete();
+                        let window = document.getElementById('window');
+                        //这个地方要先预存以保证可以重置回原来的状态
+                        window.style.backgroundImage = `url(${game.zefraEv.expath}/source/modemap_1_1.jpg)`;
+                        window.style.backgroundSize = '100% 100%';
+                        window.style.backgroundRepeat = "no-repeat";
+                        //创建游戏环境
+                        let characterContainer = document.createElement('div');
+                        characterContainer.className = 'characterContainer';
+                        window.appendChild(characterContainer);
+                        let zcard = gmode.CharacterCard;
+                        let characterChildContainer = document.createElement('div');
+                        characterChildContainer.className = 'characterChildContainer';
+                        characterContainer.appendChild(characterChildContainer);
+                        characterChildContainer.appendChild(util.CreateCardUIFromData(zcard,['generalCard','generalChildCard'],true));
+                        //技能
+                        let rightvalue = util.CreateSkillUI(window,zcard.textskillArray,zcard.textskillinfoArray);
+                        let zwarfareContext = document.createElement('div'); 
+                        zwarfareContext.className = 'zwarfareContext';
+                        window.appendChild(zwarfareContext);
+                        zwarfareContext.style.bottom = '48.5px';
+                        zwarfareContext.style.right = `${rightvalue + 20}px`;
+                        zwarfareContext.style.height = '130px';
+                        util.CreateWarFareUI(zwarfareContext,gmode.Warfares,true);
+                        let specie = document.createElement('div');
+                        specie.className = 'specie';
+                        window.appendChild(specie);
+                        let specieText = document.createElement('div');
+                        specieText.className = 'specieText';
+                        specieText.innerText = `${gmode.species}`;
+                        window.appendChild(specieText);
+                    }  
                 },
                 dialogbuttonclick:function(div) {
                     //如果当前不是div激活则跳过

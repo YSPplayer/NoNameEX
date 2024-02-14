@@ -10,7 +10,113 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
+.zskillButton {
+    position: static;
+    background-image: url(../source/skill.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 122.5px;
+    height: 35px;
+    display: inline-block;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+}
+.specieText {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    right: 75px;
+    top: 50px;
+    color: #ffe661;
+    font-size: 45px;
+    font-weight: bold;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+}
+.zwarfareCore .deswarfareWindowDiv {
+    position: absolute;
+    background-color: #00000085;
+    width: 350px;
+    color: gold;
+    margin-right: 230px;
+    border-radius: 8px;
+    overflow: auto;
+    font-size: 12px;
+    z-index: 8;
+    text-align: left;
+    text-indent: 2em;
+    line-height: 1.2;
+    padding: 5px;
+}
+.zskillButton .desWindowDiv{
+    position: absolute;
+    background-color: #00000085;
+    width: 350px;
+    color: gold;
+    /* height: 55px; */
+    /* margin-bottom: 125px; */
+    margin-right: 230px;
+    border-radius: 8px;
+    overflow: auto;
+    font-size: 12px;
+    z-index: 5;
+    text-align: left;
+    text-indent: 2em;
+    line-height: 1.2;
+    padding: 5px;
+}
+.specie {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-image: url(../source/specie.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    right: 150px;
+    top: 50px;
+}
+.zskillContainer {
+    position: absolute;
+    bottom: 48.5px;
+    /* right: 210px; */
+    height: 130px;
+    width: 135px;
+    text-align: center;
+    color: white;
+}
+.zskillButton:hover {
+    cursor: pointer;
+    background-image: url(../source/skill_active.png);
+    color: gold;
+}
+.characterChildContainer .generalChildCard {
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+.characterContainer {
+    position: absolute;
+    background-image: url(../source/characterContainer.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 247px;
+    width: 190px;
+    bottom: 10px;
+    right: 10px;
+}
+.characterChildContainer {
+    position: absolute;
+    height: 198px;
+    width: 150px;
+    top: 32.5px;
+    left: 23px;
+    border-radius: 8px;
+}
 .zefraTitleViewport {
     position: absolute;
     width: 600px;    
@@ -321,10 +427,10 @@
 }
 .zwarfareContext {
     position: absolute;
-    height: 100px;
+    /* height: 100px; */
     width: 180px;
-    top: 430px;
-    left: 83px;
+    /* top: 430px;
+    left: 83px; */
     overflow: auto;
 }
 .zwarfareContextChildLine {

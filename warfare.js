@@ -6,15 +6,23 @@ export class WarFare {
         EpicL:2,
         Legend:3
     };
-    static OrdinaryWarfares = ['0'];
+    static OrdinaryWarfares = ['0','1','2','3','4'];
     static RareWarfares = ['0'];
     static EpicLWarfares = [];
     static LegendWarfares = [];
     static TWarfares = {
         0:'蒸蒸日上',
+        1:'万物归甲',
+        2:'远击之技',
+        3:'核心会员',
+        4:'随身皮囊',
     };
     static TWarfaresDescribe = {
         0:'自己回合的出杀次数+1，对所有角色造成1点伤害己回合的出杀次数+1。',
+        1:'若你没有指定类别的装备，进入战斗时装备指定类别的随机装备。',
+        2:'造成伤害时，若你与其距离大于2，此伤害+1。',
+        3:'你可以消耗50铜币刷新商店，可刷新1次。',
+        4:'手牌上限+2',
     }
     //战法对象
     constructor(name, qualitye) {

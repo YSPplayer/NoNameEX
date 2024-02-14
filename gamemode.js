@@ -7,11 +7,14 @@ export class ZefraGameMode {
         SELECT_WARFARE_BEFORE_DUEL:1,//决斗前选择战法
         SELECT_WARFARE2_BEFORE_DUEL:2,//决斗前选择战法二
         CONfIRM_CHARACTER:3,//确认武将
+        START_INTERFACE:4//进入开始界面
     };
     static _IsMode = false;
     static Step = ZefraGameMode.Type.NONE;
     static CharacterCard = null;
     static Warfares = [];//玩家当前的战法列表
+    static Skills = [];//武将扩展技能
+    static species = 0;//金币数量
     static IsMode() {
         return ZefraGameMode._IsMode && ZefraGameMode.Step
          > ZefraGameMode.Type.NONE;
@@ -45,5 +48,7 @@ export class ZefraGameMode {
         ZefraGameMode.Step = ZefraGameMode.Type.NONE;
         ZefraGameMode.CharacterCard = null;
         ZefraGameMode.Warfares = [];
+        ZefraGameMode.Skills = [];
+        species = 0;
     }
 }

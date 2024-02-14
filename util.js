@@ -30,6 +30,7 @@ export class ZefraUtil {
         'standard', 'tw', 'xianding',
         'xinghuoliaoyuan', 'yijiang', 'yingbian'];
     static UiManage = {};//这里面存放的是我们需要管理和获取的div
+    static currentHoverDiv = null;//当前查看的技能描述对象
     static Init(lib_,game_,ui_,get_,ai_,status_,rootpath_) {
         //初始化card对象的地址
         ZefraUtil.lib = lib_;
@@ -141,7 +142,9 @@ export class ZefraUtil {
         return [new wfare(wfareArray[number],quality),quality];
     }
     //创建武将ui
-    static CreateCardUIFromData(zcard,classnames) {
+    static CreateCardUIFromData(zcard,classnames,quality) {
+        let flag = false;
+        if(!quality) flag = true;
         let generalCard = document.createElement('div');
         for (let index = 0; index < classnames.length; index++) {
             generalCard.classList.add(classnames[index]);            
@@ -202,10 +205,12 @@ export class ZefraUtil {
         campDiv.innerText = zcard.textCamp;
         generalCard.appendChild(campDiv);
         //品质
-        let qualityDiv = document.createElement('div');
-        qualityDiv.className = 'quality';
-        qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
-        generalCard.appendChild(qualityDiv);
+        if(flag) {
+            let qualityDiv = document.createElement('div');
+            qualityDiv.className = 'quality';
+            qualityDiv.style.backgroundImage = `url(${zcard.qualityeUrl})`;
+            generalCard.appendChild(qualityDiv);
+        }
         return generalCard;
     }
 
@@ -232,8 +237,60 @@ export class ZefraUtil {
         warfare.appendChild(warfareDes);
         return [warfare,_wfare];
     }
+
+    static CreateSkillUI(parent,Skills,SkillInfos) {
+        let j = 0;//每行最多放3个
+        let rightvalue = 210;//默认开始的右边距
+        let currentzskillContainer = null; 
+        for (let i = 0; i < Skills.length; i++,j++) {
+            if(j == 0) {
+                let zskillContainer = document.createElement('div');
+                currentzskillContainer = zskillContainer;
+                zskillContainer.className = 'zskillContainer';
+                parent.appendChild(zskillContainer);
+                zskillContainer.style.right = `${rightvalue}px`;
+                rightvalue += 145;//每次外边距增加指定距离
+            }
+            let zskillButton = document.createElement('div');
+            zskillButton.className = 'zskillButton';
+            zskillButton.innerText = Skills[i];
+            //mouseenter
+            zskillButton.addEventListener('mouseenter',function() {
+                //鼠标移入
+                let desWindowDiv = document.createElement('div');
+                desWindowDiv.className = 'desWindowDiv';
+                desWindowDiv.innerText =  SkillInfos[i];
+                this.appendChild(desWindowDiv);
+                ZefraUtil.currentHoverDiv = desWindowDiv;
+                let TextLength = SkillInfos[i].length;
+                let defaultLineTextLength = 25;
+                let hvalue = 0;
+                let bvalue = 75;
+                while(TextLength > 0) {
+                    //每次增10
+                    hvalue += 15;
+                    bvalue += 10;
+                    TextLength -= defaultLineTextLength;
+                }
+                desWindowDiv.style.height = `${hvalue}px`;
+                desWindowDiv.style.marginBottom = `${bvalue}px`;
+            });
+            zskillButton.addEventListener('mouseleave', function() {
+                ZefraUtil.RemoveElement(ZefraUtil.currentHoverDiv,true);
+            });
+            currentzskillContainer.appendChild(zskillButton);
+            if(j == 2) {
+                j = -1;
+                currentzskillContainer = null; 
+            }
+        }
+        return rightvalue;
+    }
+
     //创建战法图片
-    static CreateWarFareUI(parent,Warfares) {
+    static CreateWarFareUI(parent,Warfares,nofunc) {
+        let isFunc = false;
+        if(!nofunc) isFunc = true;
         let j = 0;//每行最多放3个
         let currentzwarfareContextChildLine = null; 
         for (let i = 0; i < Warfares.length; i++,j++) {
@@ -242,20 +299,50 @@ export class ZefraUtil {
                 zwarfareContextChildLine.className = 'zwarfareContextChildLine';
                 parent.appendChild(zwarfareContextChildLine);
                 currentzwarfareContextChildLine = zwarfareContextChildLine;
+                if(!isFunc) {
+                    currentzwarfareContextChildLine.style.marginBottom = '15px';
+                    currentzwarfareContextChildLine.style.display = 'flex';
+                    currentzwarfareContextChildLine.style.justifyContent = 'flex-end';
+                }
             }
             let zwarfareCore = document.createElement('div'); 
             zwarfareCore.className = 'zwarfareCore';
             zwarfareCore.style.backgroundImage = `url(${Warfares[i].imageurl})`;
-            zwarfareCore.addEventListener('click',function() {
-                //显示战法描述
-                let Warfare = Warfares[i];
-                ZefraUtil.UiManage['zwarfareInfotitle'].innerText = Warfare.textName;
-                ZefraUtil.UiManage['zwarfareInfotitle'].style.color = wfare.GetTextNameColor(Warfare.qualitye); 
-                ZefraUtil.UiManage['zwarfareInfocontext'] = Warfare.textDescribe; 
-            });
+            //显示战法描述
+            let Warfare = Warfares[i];
+            if(isFunc) {
+                zwarfareCore.addEventListener('click',function() {
+                    ZefraUtil.UiManage['zwarfareInfotitle'].innerText = Warfare.textName;
+                    ZefraUtil.UiManage['zwarfareInfotitle'].style.color = wfare.GetTextNameColor(Warfare.qualitye); 
+                    ZefraUtil.UiManage['zwarfareInfocontext'] = Warfare.textDescribe; 
+                });
+            } else {
+                // zwarfareCore.addEventListener('click',function() {
+                //     let desWindowDiv = document.createElement('div');
+                //     desWindowDiv.className = 'deswarfareWindowDiv';
+                //     desWindowDiv.innerText = Warfare.textDescribe;
+                //     this.appendChild(desWindowDiv);
+                //     ZefraUtil.currentHoverDiv = desWindowDiv;
+                //     let TextLength = Warfare.textDescribe.length;
+                //     let defaultLineTextLength = 25;
+                //     let hvalue = 0;
+                //     let bvalue = 75;
+                //     while(TextLength > defaultLineTextLength) {
+                //         //每次增10
+                //         hvalue += 15;
+                //         bvalue += 10;
+                //         TextLength -= defaultLineTextLength;
+                //     }
+                //     desWindowDiv.style.height = `${hvalue}px`;
+                //     desWindowDiv.style.marginBottom = `${bvalue}px`;
+                // });
+                // zwarfareCore.addEventListener('mouseleave', function() {
+                //    // ZefraUtil.RemoveElement(ZefraUtil.currentHoverDiv,true);
+                // });
+            }
             currentzwarfareContextChildLine.appendChild(zwarfareCore);
             if(j == 2) {
-                j = 0;
+                j = -1;
                 currentzwarfareContextChildLine = null; 
             }
         }
