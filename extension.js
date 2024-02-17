@@ -324,6 +324,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status)
                         specieText.className = 'specieText';
                         specieText.innerText = `${gmode.species}`;
                         window.appendChild(specieText);
+
+                        //test
                     }  
                 },
                 dialogbuttonclick:function(div) {

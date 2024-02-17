@@ -136,9 +136,7 @@ export class ZefraUtil {
             wfareArray = wfare.OrdinaryWarfares; 
             quality = wfare.Qualitye.Ordinary;
         } 
-        wfareArray = wfare.OrdinaryWarfares;
         number = ZefraUtil.GetRandomNumber(0,wfareArray.length);
-        number = 0;
         return [new wfare(wfareArray[number],quality),quality];
     }
     //创建武将ui
@@ -314,7 +312,7 @@ export class ZefraUtil {
                 zwarfareCore.addEventListener('click',function() {
                     ZefraUtil.UiManage['zwarfareInfotitle'].innerText = Warfare.textName;
                     ZefraUtil.UiManage['zwarfareInfotitle'].style.color = wfare.GetTextNameColor(Warfare.qualitye); 
-                    ZefraUtil.UiManage['zwarfareInfocontext'] = Warfare.textDescribe; 
+                    ZefraUtil.UiManage['zwarfareInfocontext'].innerText = `:${Warfare.textDescribe}`;
                 });
             } else {
                 // zwarfareCore.addEventListener('click',function() {
